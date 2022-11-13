@@ -32,6 +32,12 @@ void Init(Local<Object> exports, Local<Object> module) {
   Nan::Set(exports, Nan::New("tsx").ToLocalChecked(), tsx_instance);
 }
 
-NODE_MODULE(tree_sitter_typescript_binding, Init)
+#if NODE_MAJOR_VERSION >= 12
+  NODE_MODULE_INIT(/* exports, module, context */) {
+    Init(exports, Nan::To<v8::Object>(module).ToLocalChecked());
+  }
+#else
+  NODE_MODULE(tree_sitter_typescript_binding, Init)
+#endif
 
 }  // namespace
